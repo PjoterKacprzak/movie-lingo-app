@@ -14,11 +14,13 @@ import 'background.dart';
 import 'or_divider.dart';
 import 'social_icon.dart';
 
+
+//TODO:Input Validation
 class Body extends StatelessWidget {
 
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
-  TextEditingController confirmPasswordController = new TextEditingController();
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController confirmPasswordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -105,14 +107,15 @@ class Body extends StatelessWidget {
 
 
 
-Future<int>signUp(String email,String password) async
+Future<String>signUp(String email,String password) async
 {
   var actualDate = new DateTime.now();
   var dateFormatter = new DateFormat.yMd().add_jm();
   String formattedDate = dateFormatter.format(actualDate);
 
+
+  //TODO: that can be a method
   var userXml = {};
-  userXml["id"] = 4444;
   userXml["name"] = '';
   userXml["lastName"] = '';
   userXml["password"] = password;
@@ -129,9 +132,7 @@ Future<int>signUp(String email,String password) async
       headers:{'Content-Type': 'application/json'},
       body: str
   );
-
   print(response.statusCode);
   print(response.body);
-
-return 1;
+return response.body;
 }

@@ -24,6 +24,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   intl: ^0.16.1
   http: ^0.12.2
+  flutter_secure_storage: ^3.3.5
   email_validator: ^1.0.0
 
 
