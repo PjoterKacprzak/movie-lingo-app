@@ -52,13 +52,19 @@ class Body extends StatelessWidget {
             ),
             RoundedButton(
               text: "SIGNUP",
-              press: () {
+              press: () async{
 
-                print(emailController);
-                print(passwordController);
-                print(confirmPasswordController);
-                if(passwordController.text==confirmPasswordController.text)
-               signUp(emailController.text, passwordController.text);
+                if(passwordController.text==confirmPasswordController.text) {
+                  {
+                    var result = await signUp(emailController.text, passwordController.text);
+                    print(result);
+                    if (result == "User saved")
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                  }
+                }
                 else
                   {
                     Text("Wrong Password");
@@ -69,7 +75,7 @@ class Body extends StatelessWidget {
             AlreadyHaveAnAccountCheck(
               login: false,
               press: () {
-                Navigator.push(
+                Navigator.pop(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
@@ -104,15 +110,11 @@ class Body extends StatelessWidget {
   }
 }
 
-
-
-
 Future<String>signUp(String email,String password) async
 {
   var actualDate = new DateTime.now();
   var dateFormatter = new DateFormat.yMd().add_jm();
   String formattedDate = dateFormatter.format(actualDate);
-
 
   //TODO: that can be a method
   var userXml = {};
@@ -128,11 +130,9 @@ Future<String>signUp(String email,String password) async
   print(str);
 
   final http.Response response = await http.post(
-      'http://10.0.2.2:8080/api/user/addUser',
+      'http://10.0.2.2:8080/addUser',
       headers:{'Content-Type': 'application/json'},
       body: str
   );
-  print(response.statusCode);
-  print(response.body);
 return response.body;
 }

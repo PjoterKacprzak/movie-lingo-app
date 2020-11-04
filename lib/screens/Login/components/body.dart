@@ -27,8 +27,6 @@ class Body extends StatefulWidget {
 
 class  _BodyState extends State<Body> {
 
-  bool isLoggedIn = false;
-
   @override
   void initState() {
     super.initState();
@@ -39,7 +37,6 @@ class  _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     var storage = FlutterSecureStorage();
-
     Size size = MediaQuery.of(context).size;
     final TextEditingController emailController= TextEditingController();
     final TextEditingController passwordController= TextEditingController();
@@ -72,10 +69,12 @@ class  _BodyState extends State<Body> {
               text: "LOGIN",
               press: ()async {
                 String token =  await login(emailController.text, passwordController.text);
-                TokenController().saveToken(token);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainScreen()));
+                if(token!="Bad Credentials") {
+                  TokenController().saveToken(token);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainScreen()));
+                }
               },
             ),
             SizedBox(height: size.height * 0.03),
@@ -99,7 +98,7 @@ class  _BodyState extends State<Body> {
 
   Future<String> login(String email, String password) async {
 
-
+    print("Login...");
     //TODO: that can be a method
     var userXml = {};
     userXml["name"] = '';
@@ -114,12 +113,11 @@ class  _BodyState extends State<Body> {
     print(userJson);
 
     final http.Response response = await http.post(
-        'http://10.0.2.2:8080/api/user/login',
+        'http://10.0.2.2:8080/login',
         headers:{'Content-Type': 'application/json'},
         body: userJson
     );
     setState(() {
-      isLoggedIn = true;
     });
 
     String stringResponse = response.body;
@@ -128,19 +126,37 @@ class  _BodyState extends State<Body> {
   }
 
   void autoLogIn() async {
-
+    print("Auto-Login...");
     var userToken = await TokenController().retrieveToken("token");
+    var isLoggedIn = await TokenController().retrieveToken("isLoggedIn");
     print(userToken);
-    if (userToken != null) {
+    print(isLoggedIn);
+
+    if (isLoggedIn == "Yes") {
+
+      var prepareTokenJson = {};
+      prepareTokenJson["authorization"]=userToken;
+      String tokenJson=json.encode(prepareTokenJson);
+      print(tokenJson);
+
+      final http.Response response = await http.post(
+          'http://10.0.2.2:8080/api/user/authByToken',
+          headers:{'Content-Type': 'application/json','authorization':userToken}
+
+
+      );
+      print(response.statusCode);
+      print(response.body);
+
       setState(() {
-        isLoggedIn = true;
       });
+      if(response.body=="Ok Credentials")
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MainScreen()));
     }else
       {
-        //isLoggedIn=false;
+      print("failed to AutoLogin");
       }
   }
   }
