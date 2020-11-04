@@ -10,6 +10,7 @@ import 'package:movie_lingo_app/components/rounded_input_field.dart';
 import 'package:movie_lingo_app/components/rounded_password_field.dart';
 import 'package:movie_lingo_app/controller/TokenController.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:movie_lingo_app/screens/Login/login_screen.dart';
 import 'package:movie_lingo_app/screens/Welcome/MainPage/main_screen.dart';
 import '../../Signup/signup_screen.dart';
 import 'background.dart';
@@ -156,7 +157,10 @@ class  _BodyState extends State<Body> {
           MaterialPageRoute(builder: (context) => MainScreen()));
     }else
       {
-      print("failed to AutoLogin");
+      print("Failed to AutoLogin");
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()));
       }
   }
   }
