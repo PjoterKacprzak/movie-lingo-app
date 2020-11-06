@@ -148,9 +148,12 @@ class  _BodyState extends State<Body> {
       );
       print(response.statusCode);
       print(response.body);
-
-      setState(() {
-      });
+      if(response.body == "Token Expired")
+        {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()));
+        }
       if(response.body=="Ok Credentials")
       Navigator.push(
           context,
