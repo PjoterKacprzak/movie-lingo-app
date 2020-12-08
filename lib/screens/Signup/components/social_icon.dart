@@ -3,10 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:movie_lingo_app/constants.dart';
 
 
-class SocalIcon extends StatelessWidget {
+class SocialIcon extends StatelessWidget {
   final String iconSrc;
   final Function press;
-  const SocalIcon({
+  const SocialIcon({
     Key key,
     this.iconSrc,
     this.press,

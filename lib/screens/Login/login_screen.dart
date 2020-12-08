@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:movie_lingo_app/controller/TokenController.dart';
 
 
-//TODO:Check if token isnt expired
 class LoginScreen extends StatelessWidget {
 
 

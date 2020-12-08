@@ -22,11 +22,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
    print(allValues);
   }
 
-  Future<String>  retrieveToken(String token)async{
-     print("all values is storage");
+  Future<String>  retrieveToken(String value)async{
     Map<String, String> allValues = await storage.readAll();
     print(allValues);
-     return storage.read(key: token);
+     return storage.read(key: value);
   }
 
   void  refreshToken(){

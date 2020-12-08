@@ -21,6 +21,7 @@ class Body extends StatelessWidget {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController confirmPasswordController = new TextEditingController();
+  final TextEditingController loginNameController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -35,6 +36,11 @@ class Body extends StatelessWidget {
               "assets/icons/signup.svg",
               height: size.height * 0.35,
             ),
+          RoundedInputField(
+          controller: loginNameController,
+          hintText: "Your Login",
+          onChanged: (value) {},
+    ),
             RoundedInputField(
               controller: emailController,
               hintText: "Your Email",
@@ -56,13 +62,16 @@ class Body extends StatelessWidget {
 
                 if(passwordController.text==confirmPasswordController.text) {
                   {
-                    var result = await signUp(emailController.text, passwordController.text);
+                    var result = await signUp(emailController.text, passwordController.text,loginNameController.text);
                     print(result);
                     if (result == "User saved")
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => LoginScreen()));
+                    else{
+
+                    }
                   }
                 }
                 else
@@ -89,15 +98,15 @@ class Body extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SocalIcon(
+                SocialIcon(
                   iconSrc: "assets/icons/facebook.svg",
                   press: () {},
                 ),
-                SocalIcon(
+                SocialIcon(
                   iconSrc: "assets/icons/twitter.svg",
                   press: () {},
                 ),
-                SocalIcon(
+                SocialIcon(
                   iconSrc: "assets/icons/google-plus.svg",
                   press: () {},
                 ),
@@ -110,23 +119,25 @@ class Body extends StatelessWidget {
   }
 }
 
-Future<String>signUp(String email,String password) async
+Future<String>signUp(String email,String password,String loginName) async
 {
   var actualDate = new DateTime.now();
   var dateFormatter = new DateFormat.yMd().add_jm();
   String formattedDate = dateFormatter.format(actualDate);
 
   //TODO: that can be a method
-  var userXml = {};
-  userXml["name"] = '';
-  userXml["lastName"] = '';
-  userXml["password"] = password;
-  userXml["telephoneNumber"] = '';
-  userXml["email"] = email;
-  userXml["profilePhoto"] = '';
-  userXml["createdAt"]= formattedDate;
-  userXml["role"]= 'user';
-  String str = json.encode(userXml);
+  var userJson = {};
+  userJson["name"] = '';
+  userJson["lastName"] = '';
+  userJson["password"] = password;
+  userJson["telephoneNumber"] = '';
+  userJson["email"] = email;
+  userJson["profilePhoto"] = '';
+  userJson["createdAt"]= formattedDate;
+  userJson["role"]= 'user';
+  userJson["isActive"]= 'false';
+  userJson["loginName"]= loginName;
+  String str = json.encode(userJson);
   print(str);
 
   final http.Response response = await http.post(

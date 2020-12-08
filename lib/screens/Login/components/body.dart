@@ -11,7 +11,7 @@ import 'package:movie_lingo_app/components/rounded_password_field.dart';
 import 'package:movie_lingo_app/controller/TokenController.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:movie_lingo_app/screens/Login/login_screen.dart';
-import 'package:movie_lingo_app/screens/Welcome/MainPage/main_screen.dart';
+import 'package:movie_lingo_app/screens/MainPage/main_screen.dart';
 import '../../Signup/signup_screen.dart';
 import 'background.dart';
 
@@ -23,7 +23,7 @@ class Body extends StatefulWidget {
 
 
   @override
-  _BodyState createState() =>  _BodyState();
+  _BodyState createState() => _BodyState();
 }
 
 class  _BodyState extends State<Body> {
@@ -47,10 +47,6 @@ class  _BodyState extends State<Body> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "LOGIN",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
             SizedBox(height: size.height * 0.03),
             SvgPicture.asset(
               "assets/icons/login.svg",
@@ -101,16 +97,11 @@ class  _BodyState extends State<Body> {
 
     print("Login...");
     //TODO: that can be a method
-    var userXml = {};
-    userXml["name"] = '';
-    userXml["lastName"] = '';
-    userXml["password"] = password;
-    userXml["telephoneNumber"] = '';
-    userXml["email"] = email;
-    userXml["profilePhoto"] = '';
-    userXml["createdAt"]= '';
-    userXml["role"]= '';
-    String userJson = json.encode(userXml);
+    var prepareJson = {};
+    prepareJson["password"] = password;
+    prepareJson["email"] = email;
+
+    String userJson = json.encode(prepareJson);
     print(userJson);
 
     final http.Response response = await http.post(
@@ -118,8 +109,7 @@ class  _BodyState extends State<Body> {
         headers:{'Content-Type': 'application/json'},
         body: userJson
     );
-    setState(() {
-    });
+
 
     String stringResponse = response.body;
     return stringResponse;
@@ -158,8 +148,7 @@ class  _BodyState extends State<Body> {
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MainScreen()));
-    }else
-      {
+    }else {
       print("Failed to AutoLogin");
       Navigator.push(
           context,
