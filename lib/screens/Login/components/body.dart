@@ -1,5 +1,5 @@
-
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,32 +15,40 @@ import 'package:movie_lingo_app/screens/MainPage/main_screen.dart';
 import '../../Signup/signup_screen.dart';
 import 'background.dart';
 
+import 'package:path_provider/path_provider.dart';
+
 //TODO:Input Validation
 class Body extends StatefulWidget {
   const Body({
     Key key,
   }) : super(key: key);
 
-
   @override
   _BodyState createState() => _BodyState();
 }
 
-class  _BodyState extends State<Body> {
+class _BodyState extends State<Body> {
+  Future<Directory> _tempDirectory;
 
   @override
   void initState() {
     super.initState();
-    autoLogIn();
+    _tempDirectory =  getTemporaryDirectory();
+    tryToLogIn();
   }
 
 
+  void tryToLogIn() async{
+    await autoLogIn();
+  }
   @override
   Widget build(BuildContext context) {
     var storage = FlutterSecureStorage();
-    Size size = MediaQuery.of(context).size;
-    final TextEditingController emailController= TextEditingController();
-    final TextEditingController passwordController= TextEditingController();
+    Size size = MediaQuery
+        .of(context)
+        .size;
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
 
     return Background(
       child: SingleChildScrollView(
@@ -64,12 +72,11 @@ class  _BodyState extends State<Body> {
             ),
             RoundedButton(
               text: "LOGIN",
-              press: ()async {
-                String token =  await login(emailController.text, passwordController.text);
-                if(token!="Bad Credentials") {
-                  TokenController().saveToken(token);
-                  Navigator.push(
-                      context,
+              press: () async {
+                int response =
+                await login(emailController.text, passwordController.text);
+                if (response == 200) {
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (context) => MainScreen()));
                 }
               },
@@ -93,10 +100,8 @@ class  _BodyState extends State<Body> {
     );
   }
 
-  Future<String> login(String email, String password) async {
-
+  Future<int> login(String email, String password) async {
     print("Login...");
-    //TODO: that can be a method
     var prepareJson = {};
     prepareJson["password"] = password;
     prepareJson["email"] = email;
@@ -104,19 +109,16 @@ class  _BodyState extends State<Body> {
     String userJson = json.encode(prepareJson);
     print(userJson);
 
-    final http.Response response = await http.post(
-        'http://10.0.2.2:8080/login',
-        headers:{'Content-Type': 'application/json'},
-        body: userJson
-    );
+    final http.Response response = await http.post('http://10.0.2.2:8080/login',
+        headers: {'Content-Type': 'application/json'}, body: userJson);
 
+    if (response.statusCode == 200)
+      TokenController().saveToken(response.body);
 
-    String stringResponse = response.body;
-    return stringResponse;
-
+    return response.statusCode;
   }
 
-  void autoLogIn() async {
+  Future<void> autoLogIn() async {
     print("Auto-Login...");
     var userToken = await TokenController().retrieveToken("token");
     var isLoggedIn = await TokenController().retrieveToken("isLoggedIn");
@@ -124,38 +126,33 @@ class  _BodyState extends State<Body> {
     print(isLoggedIn);
 
     if (isLoggedIn == "Yes") {
-
       var prepareTokenJson = {};
-      prepareTokenJson["authorization"]=userToken;
-      String tokenJson=json.encode(prepareTokenJson);
+      prepareTokenJson["authorization"] = userToken;
+      String tokenJson = json.encode(prepareTokenJson);
       print(tokenJson);
 
-      final http.Response response = await http.post(
-          'http://10.0.2.2:8080/api/user/authByToken',
-          headers:{'Content-Type': 'application/json','authorization':userToken}
-
-
-      );
-      print(response.statusCode);
+      final http.Response response = await http
+          .post('http://10.0.2.2:8080/api/user/authByToken', headers: {
+        'Content-Type': 'application/json',
+        'authorization': userToken
+      });
+      print("Status code  $response");
       print(response.body);
-      if(response.body == "Token Expired")
-        {
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()));
-        }
-      if(response.body=="Ok Credentials")
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()));
-    }else {
-      print("Failed to AutoLogin");
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()));
+      if (response.statusCode == 400) {
+        TokenController().deleteToken("token");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
       }
+      else if (response.statusCode == 200) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
+      }
+      else {
+        print("Failed to AutoLogin");
+        TokenController().deleteToken("token");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      }
+    }
   }
-  }
-
-
-
+}

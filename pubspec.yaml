@@ -26,7 +26,7 @@ dependencies:
   http: ^0.12.2
   flutter_secure_storage: ^3.3.5
   email_validator: ^1.0.0
-
+  path_provider: ^1.6.24
 
   flutter:
     sdk: flutter

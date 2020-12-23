@@ -1,17 +1,14 @@
 
 
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_lingo_app/components/rounded_button.dart';
-import 'package:movie_lingo_app/screens/MainPage/components/background.dart';
-import 'package:movie_lingo_app/screens/Welcome/welcome_screen.dart';
 
+import 'package:movie_lingo_app/screens/ProfilePage/profile_screen.dart';
 
 class Body extends StatefulWidget {
   @override
   _BodyState createState() => _BodyState();
+
 }
 
 class _BodyState extends State<Body> {
@@ -19,7 +16,7 @@ class _BodyState extends State<Body> {
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  static const List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
       style: optionStyle,
@@ -29,17 +26,10 @@ class _BodyState extends State<Body> {
       style: optionStyle,
     ),
     Text(
-      'Index 3: Add',
+      'Index 2: Add',
       style: optionStyle,
     ),
-    Text(
-      'Index 3: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 4: School',
-      style: optionStyle,
-    ),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -51,37 +41,47 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: new Theme(
+          data: Theme.of(context).copyWith(
+            // sets the background color of the `BottomNavigationBar`
+              canvasColor: Color(0xffe3d8),
+              // sets the active color of the `BottomNavigationBar` if `Brightness` is light
+              primaryColor: Colors.red,
+              textTheme: Theme
+                  .of(context)
+                  .textTheme
+                  .copyWith(caption: new TextStyle(color: Color(0x0a043c)))),
+          // sets the inactive color of the `BottomNavigationBar`
+          child: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                label: 'Search',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add),
+                label: 'Add',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle_sharp),
+                label: 'Profile',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.amber[800],
+            unselectedItemColor: Colors.black,
+            onTap: _onItemTapped,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-
-          ), BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_sharp),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.black,
-        onTap: _onItemTapped,
-      ),
+        )
     );
   }
 }
+
+
