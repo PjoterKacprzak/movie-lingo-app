@@ -24,7 +24,6 @@ class Body extends StatelessWidget {
             new Image.asset('assets/icons/chat.svg', width: 100.0, height: 100.0),
             SizedBox(height: size.height * 0.05),
             RoundedButton(
-
               text: "LOGIN",
               press: () {
                 Navigator.push(

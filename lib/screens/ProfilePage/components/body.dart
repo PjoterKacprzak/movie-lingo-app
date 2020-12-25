@@ -7,6 +7,7 @@ import 'package:movie_lingo_app/model/User.dart';
 import 'package:movie_lingo_app/screens/AboutApp/about_app_screen.dart';
 import 'package:movie_lingo_app/screens/Login/login_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:movie_lingo_app/screens/PasswordChange/password_change_screen.dart';
 
 class Body extends StatefulWidget {
 
@@ -105,32 +106,42 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.03),
-                      Container(
-                        width: double.infinity,
-                        height: size.height * 0.06,
-                        color: Color(0xffffe3d8),
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Stack(alignment: Alignment.centerLeft, children: [
-                                Text("Password"),
-                                Center(
-                                  child: Text("*********"),
-                                ),
-                                Positioned(
-                                  right: 6,
-                                  child: Icon(
-                                    Icons.arrow_forward_ios_outlined,
-                                    size: size.height * 0.02,
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => PasswordChange()));
+                        },
+                        child:Container(
+                          width: double.infinity,
+                          height: size.height * 0.06,
+                          color: Color(0xffffe3d8),
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Stack(alignment: Alignment.centerLeft, children: [
+                                  Text("Password"),
+                                  Center(
+                                    child: Text("*********"),
                                   ),
-                                ),
-                              ]),
-                            )
-                          ],
+                                  Positioned(
+                                    right: 6,
+                                    child: Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                      size: size.height * 0.02,
+                                    ),
+                                  ),
+                                ]),
+                              )
+                            ],
+                          ),
                         ),
                       ),
+
+
                       SizedBox(height: size.height * 0.03),
 
                       GestureDetector(

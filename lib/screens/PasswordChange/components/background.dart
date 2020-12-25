@@ -12,9 +12,8 @@ class Background extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
       color: Color(0xff0a043c),
-      height: size.height,
       width: double.infinity,
-      // Here i can use size.width but use double.infinity because both work as a same
+      height: size.height,
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
@@ -22,16 +21,16 @@ class Background extends StatelessWidget {
             top: 0,
             left: 0,
             child: Image.asset(
-              "assets/images/signup_top.png",
+              "assets/images/main_top.png",
               width: size.width * 0.35,
             ),
           ),
           Positioned(
             bottom: 0,
-            left: 0,
+            right: 0,
             child: Image.asset(
-              "assets/images/main_bottom.png",
-              width: size.width * 0.25,
+              "assets/images/login_bottom.png",
+              width: size.width * 0.4,
             ),
           ),
           child,

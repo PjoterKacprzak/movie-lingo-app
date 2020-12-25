@@ -27,7 +27,8 @@ dependencies:
   flutter_secure_storage: ^3.3.5
   email_validator: ^1.0.0
   path_provider: ^1.6.24
-
+  progress_state_button: ^1.0.2
+  passwordfield: ^0.0.82
   flutter:
     sdk: flutter
 
