@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import 'package:movie_lingo_app/components/rounded_password_field.dart';
 import 'package:movie_lingo_app/controller/TokenController.dart';
@@ -14,18 +15,23 @@ import 'package:progress_state_button/progress_button.dart';
 import 'package:http/http.dart' as http;
 
 class Body extends StatefulWidget {
+
+
+
+
   @override
   _BodyState createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
+  var logger = Logger();
   final TextEditingController _newPasswordController =
-      new TextEditingController();
+  new TextEditingController();
   final TextEditingController _newConfirmPasswordController =
-      new TextEditingController();
+  new TextEditingController();
 
   TextEditingController _currentPasswordController =
-      new TextEditingController();
+  new TextEditingController();
 
   ButtonState stateTextWithIcon = ButtonState.idle;
 
@@ -37,7 +43,7 @@ class _BodyState extends State<Body> {
               icon: Icon(Icons.send, color: Colors.white),
               color: Colors.deepPurple.shade500),
           ButtonState.loading:
-              IconedButton(text: "Loading", color: Colors.deepPurple.shade700),
+          IconedButton(text: "Loading", color: Colors.deepPurple.shade700),
           ButtonState.fail: IconedButton(
               text: "Failed",
               icon: Icon(Icons.cancel, color: Colors.white),
@@ -56,6 +62,7 @@ class _BodyState extends State<Body> {
 
           if (stateTextWithIcon == ButtonState.success) {
             Future.delayed(Duration(seconds: 1), () {
+              logger.d("Logger is working!");
               Navigator.pop(context);
             });
           }
@@ -65,29 +72,34 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
 
     ButtonState stateOnlyText = ButtonState.idle;
     ButtonState stateTextWithIcon = ButtonState.idle;
     return Scaffold(
         body: Background(
             child: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-            RoundedPasswordField(
-              hintText: 'old password',
-            ),
-            RoundedPasswordField(
-              hintText: 'new password',
-            ),
-            RoundedPasswordField(
-              hintText: 'confirm new password',
-            ),
-          buildTextWithIcon(),
-        ],
-      ),
-    )));
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RoundedPasswordField(
+                    controller: _currentPasswordController,
+                    hintText: 'old password',
+                  ),
+                  RoundedPasswordField(
+                    controller:  _newPasswordController,
+                    hintText: 'new password',
+                  ),
+                  RoundedPasswordField(
+                    controller: _newConfirmPasswordController,
+                    hintText: 'confirm new password',
+                  ),
+                  buildTextWithIcon(),
+                ],
+              ),
+            )));
   }
 
   Future<void> onPressedIconWithText() async {
@@ -126,8 +138,8 @@ class _BodyState extends State<Body> {
     });
   }
 
-  Future<http.Response> changePassword(
-      String oldPassword, String newPassword) async {
+  Future<http.Response> changePassword(String oldPassword,
+      String newPassword) async {
     String token = await TokenController().retrieveToken("token");
 
     var newJson = {};

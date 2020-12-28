@@ -17,7 +17,7 @@ class  _MainScreen extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Body(),
+        body: Body()
     );
 
   }

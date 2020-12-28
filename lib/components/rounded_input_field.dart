@@ -8,10 +8,12 @@ class RoundedInputField extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
   final IconData icon;
+  final FocusNode focusNode;
   final ValueChanged<String> onChanged;
   const RoundedInputField({
     Key key,
     this.hintText,
+    this.focusNode,
     this.icon = Icons.person,
     this.onChanged,
     this.controller,
