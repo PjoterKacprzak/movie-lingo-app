@@ -8,7 +8,7 @@ class DynamicFlashCard extends StatelessWidget {
   final TextEditingController word = new TextEditingController();
   final TextEditingController translated = new TextEditingController();
 
-   FocusNode focusNode;
+  FocusNode focusNode;
 
   DynamicFlashCard( FocusNode focusNode)
   {
@@ -24,7 +24,7 @@ class DynamicFlashCard extends StatelessWidget {
           Column(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.fromLTRB(10, 5, 5, 0),
+                padding: EdgeInsets.fromLTRB(20, 5, 5, 0),
                 child: Row(
                   children: [
                     new RoundedInputField(
@@ -45,7 +45,7 @@ class DynamicFlashCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(80, 0, 10, 0),
+                padding: EdgeInsets.fromLTRB(80, 0, 20, 0),
                 child: new RoundedInputField(
                   controller: translated,
                   icon: Icons.flag,
