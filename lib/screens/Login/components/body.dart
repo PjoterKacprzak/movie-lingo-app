@@ -72,13 +72,15 @@ class _BodyState extends State<Body> {
             ),
             RoundedButton(
               text: "LOGIN",
-              press: () async {
-                int response =
-                await login(emailController.text, passwordController.text);
-                if (response == 200) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MainScreen()));
-                }
+              press: ()  {
+               // int response =
+                //await login(emailController.text, passwordController.text);
+                // if (response == 200) {
+                //   Navigator.push(context,
+                //       MaterialPageRoute(builder: (context) => MainScreen()));
+                // }
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MainScreen()));
               },
             ),
             SizedBox(height: size.height * 0.03),
@@ -141,7 +143,7 @@ class _BodyState extends State<Body> {
       if (response.statusCode == 400) {
         TokenController().deleteToken("token");
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
       }
       else if (response.statusCode == 200) {
         Navigator.push(
@@ -151,7 +153,7 @@ class _BodyState extends State<Body> {
         print("Failed to AutoLogin");
         TokenController().deleteToken("token");
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
       }
     }
   }

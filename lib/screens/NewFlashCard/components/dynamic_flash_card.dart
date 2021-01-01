@@ -9,10 +9,12 @@ class DynamicFlashCard extends StatelessWidget {
   final TextEditingController translated = new TextEditingController();
 
   FocusNode focusNode;
+  int _flashCardIndex;
 
-  DynamicFlashCard( FocusNode focusNode)
+  DynamicFlashCard( FocusNode focusNode, int flashCardIndex)
   {
     this.focusNode = focusNode;
+    this._flashCardIndex = flashCardIndex;
   }
 
   @override
@@ -24,23 +26,30 @@ class DynamicFlashCard extends StatelessWidget {
           Column(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.fromLTRB(20, 5, 5, 0),
+
+                padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
                 child: Row(
+
                   children: [
-                    new RoundedInputField(
+                     Text("$_flashCardIndex.",
+                       style: TextStyle(
+                           fontSize: 30,
+                       color: Colors.red),
+                     ),
+                     RoundedInputField(
                       // icon:Icon.ImageIcon(Image.asset('icons/flags/png/de.png', package: 'country_icons')),
                       icon: Icons.flag,
                       focusNode: focusNode,
                       controller: word,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 5, 5),
-                      child: Icon(
-                        Icons.compare_arrows_rounded,
-                        size: 30,
-                        color: Color(0xffFFA400),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(20, 5, 5, 5),
+                    //   child: Icon(
+                    //     Icons.compare_arrows_rounded,
+                    //     size: 30,
+                    //     color: Color(0xffFFA400),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

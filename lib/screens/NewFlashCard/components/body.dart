@@ -24,6 +24,7 @@ class _BodyState extends State<Body> {
 
   int _selectedCountry;
   int _selectedCountryToTranslate;
+  int _flashCardIndex = 0;
   static List<String> _cities = [
     "Polish",
     "English",
@@ -56,6 +57,9 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar:AppBar(
+      title: const Text('Next page'),
+    ),
       backgroundColor: Color(0xff0a043c),
       body: Column(
         children: [
@@ -172,11 +176,13 @@ class _BodyState extends State<Body> {
       translatedWords = [];
       dynamicFlashCards = [];
     }
-    setState(() {});
+    setState(() {
+      _flashCardIndex +=1;
+    });
     if (dynamicFlashCards.length >= 40) {
       return;
     }
-    dynamicFlashCards.add(new DynamicFlashCard(myFocusNode));
+    dynamicFlashCards.add(new DynamicFlashCard(myFocusNode,_flashCardIndex));
   }
 
   swapLanguage()
@@ -187,6 +193,7 @@ class _BodyState extends State<Body> {
       temporaryCountry = _selectedCountry;
       _selectedCountry = _selectedCountryToTranslate;
       _selectedCountryToTranslate = temporaryCountry;
+
 
     });
   }
