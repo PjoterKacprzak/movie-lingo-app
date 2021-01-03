@@ -1,11 +1,18 @@
+import 'dart:convert';
 import 'dart:core';
 
+// import com.google.cloud.translate.*;
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:direct_select_flutter/direct_select_container.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_lingo_app/components/rounded_input_field.dart';
-import 'package:movie_lingo_app/model/LanguaagePicker.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:movie_lingo_app/model/Language.dart';
+import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import 'package:movie_lingo_app/screens/NewFlashCard/components/dynamic_flash_card.dart';
 
 import '../../../constants.dart';
@@ -17,156 +24,255 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   FocusNode myFocusNode;
+  TextEditingController _flashCardNameController = TextEditingController();
 
   List<DynamicFlashCard> dynamicFlashCards = [];
   List<String> words = [];
   List<String> translatedWords = [];
 
-  int _selectedCountry;
-  int _selectedCountryToTranslate;
+  Language _selectedCountry;
+  Language _selectedCountryToTranslate;
   int _flashCardIndex = 0;
-  static List<String> _cities = [
-    "Polish",
-    "English",
-    "Italian",
-    "French",
-    "Ukrainian",
-    "Russian",
-    "Portuguese"
-  ];
 
-  List<DropdownMenuItem<String>> _dropdownMenuItems;
-
-  // List<LanguagePicker> _cities =
-  //     LanguagePicker(Country, language)
+  List<Language> supportedLanguages;
 
   @override
   void initState() {
+    // getData();
     super.initState();
     myFocusNode = FocusNode();
   }
 
-  @override
-  void dispose() {
-    // Clean up the focus node when the Form is disposed.
-    myFocusNode.dispose();
-    super.dispose();
+  void getData() async {
+    supportedLanguages = await getGoogleSupportedLanguages();
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar:AppBar(
-      title: const Text('Next page'),
-    ),
-      backgroundColor: Color(0xff0a043c),
-      body: Column(
-        children: [
-          SizedBox(
-            height: size.height * 0.09,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-
-                  borderRadius: BorderRadius.circular(80.0),
-                  color: kPrimaryLightColor,
-                  // border: Border.all()
-                ),
-                padding: EdgeInsets.all(10.0),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCountry = value;
-                      });
-                    },
-                    value: _selectedCountry,
-                    items: [
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Polish",textAlign: TextAlign.center,)), value: 1,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("English",textAlign: TextAlign.center,)), value: 2,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Italian",textAlign: TextAlign.center,)), value: 3,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("French",textAlign: TextAlign.center,)), value: 4,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Ukrainian",textAlign: TextAlign.center,)), value: 5,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Russian",textAlign: TextAlign.center,)), value: 6,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Portuguese",textAlign: TextAlign.center,)), value: 7,),
+    return FutureBuilder(
+        future: getGoogleSupportedLanguages(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return PlatformScaffold(
+              backgroundColor: Color(0xff0a043c),
+              material: (_, __) => MaterialScaffoldData(
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                floatingActionButton: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FloatingActionButton(
+                        heroTag: "btn1",
+                        child: Icon(CupertinoIcons.envelope),
+                        onPressed: () {
+                          getGoogleSupportedLanguages();
+                          submitData();
+                        },
+                      ),
+                      FloatingActionButton(
+                        heroTag: "btn2",
+                        child: Icon(
+                          CupertinoIcons.xmark,
+                          size: ScreenSizeConfig.blockSizeVertical * 4,
+                        ),
+                        backgroundColor: Colors.redAccent,
+                        onPressed: () {
+                          cancelDynamic();
+                        },
+                      ),
+                      FloatingActionButton(
+                        heroTag: "btn3",
+                        child: Icon(Icons.add),
+                        backgroundColor: Colors.green,
+                        onPressed: () {
+                          addDynamic();
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap:() {swapLanguage(); },
-                child:  Container(
-                    width: 80.0,
-                    height: 40.0,
-                    child: Icon(Icons.compare_arrows_rounded, color: Color(0xffFFA400),)),
+              cupertino: (_, __) => CupertinoPageScaffoldData(
+                  body: Scaffold(
+                      floatingActionButton: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                          FloatingActionButton(
+                            child: Icon(CupertinoIcons.envelope),
+                            onPressed: () {},
+                          ),
+                          FloatingActionButton(
+                            child: Icon(Icons.cancel),
+                            backgroundColor: Colors.redAccent,
+                            onPressed: () {
+                              cancelDynamic();
+                            },
+                          ),
+                          FloatingActionButton(
+                            child: Icon(Icons.add),
+                            backgroundColor: Colors.green,
+                            onPressed: () {
+                              addDynamic();
+                            },
+                          ),
+                  ]))),
+              appBar: PlatformAppBar(
+                backgroundColor: Color(0xff0a043c),
+                material: (_, __) => MaterialAppBarData(
+                  leading: Container(
+                    width: 0,
+                    height: 0,
+                  ),
+                ),
+                cupertino: (_, __) => CupertinoNavigationBarData(),
               ),
+              body: Container(
+                child: ListView(
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: _flashCardNameController,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 15.0),
+                              fillColor: kPrimaryLightColor,
+                              filled: true,
+                              hintText: 'Enter flashcard name',
+                              hintStyle: TextStyle(
+                                  fontSize:
+                                      ScreenSizeConfig.blockSizeHorizontal * 4),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20),
+                              )),
+                        )),
+                    SizedBox(
+                      height: ScreenSizeConfig.blockSizeHorizontal * 1,
+                      //width: ScreenSizeConfig.blockSizeVertical * 55,
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(bottom:  ScreenSizeConfig.blockSizeHorizontal * 1),
+                      decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 0.5, color: Color(0xffffe3d8),),
+                          )
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
 
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(80.0),
-                  color: kPrimaryLightColor,
-                  // border: Border.all()
-                ),
-                padding: EdgeInsets.all(10.0),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCountryToTranslate = value;
-                      });
-                    },
-                    value: _selectedCountryToTranslate,
-                    items: [
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Polish",textAlign: TextAlign.center,)), value: 1,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("English",textAlign: TextAlign.center,)), value: 2,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Italian",textAlign: TextAlign.center,)), value: 3,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("French",textAlign: TextAlign.center,)), value: 4,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Ukrainian",textAlign: TextAlign.center,)), value: 5,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Russian",textAlign: TextAlign.center,)), value: 6,),
-                      DropdownMenuItem(child: SizedBox( width: 100, child: Text("Portuguese",textAlign: TextAlign.center,)), value: 7,),
-                    ],
-                  ),
+                              height: ScreenSizeConfig.blockSizeVertical * 6,
+                              //width: ScreenSizeConfig.blockSizeHorizontal * 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(80.0),
+                                color: kPrimaryLightColor,
+                              ),
+                              child: DropdownSearch<Language>(
+                                maxHeight: ScreenSizeConfig.blockSizeVertical* 30,
+                                selectedItem: _selectedCountry,
+                                //items: [supportedLanguages.getLanguageList()],
+                                searchBoxController:
+                                    TextEditingController(text: ''),
+                                mode: Mode.BOTTOM_SHEET,
+                                isFilteredOnline: true,
+                                showClearButton: false,
+                                showSearchBox: true,
+                                //label: 'Language',
+                                dropdownSearchDecoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Theme.of(context)
+                                      .inputDecorationTheme
+                                      .fillColor,
+                                ),
+                                //autoValidateMode: AutovalidateMode.onUserInteraction,
+                                // validator: (UserModel u) =>
+                                // u == null ? "user field is required " : null,
+                                onFind: (String s) =>
+                                    getGoogleSupportedLanguages(),
+                                onChanged: (Language data) {
+                                  setState(() {
+                                    _selectedCountry = data;
+                                  });
+                                  print(data);
+                                },
+                                dropdownBuilder: _customDropDownExample,
+                                popupItemBuilder: _customPopupItemBuilderExample,
+
+                              ),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: ScreenSizeConfig.blockSizeVertical * 6,
+                               //width: ScreenSizeConfig.blockSizeHorizontal * 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(80.0),
+                                color: kPrimaryLightColor,
+                              ),
+                              child: DropdownSearch<Language>(
+                                maxHeight: ScreenSizeConfig.blockSizeVertical* 50,
+
+                                //items: [supportedLanguages.getLanguageList()],
+                                searchBoxController:
+                                    TextEditingController(text: ''),
+                                mode: Mode.BOTTOM_SHEET,
+                                isFilteredOnline: true,
+                                showClearButton: false,
+                                showSearchBox: true,
+                                selectedItem: _selectedCountryToTranslate,
+                                //label: 'Language',
+                                dropdownSearchDecoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Theme.of(context)
+                                      .inputDecorationTheme
+                                      .fillColor,
+                                ),
+                                //autoValidateMode: AutovalidateMode.onUserInteraction,
+                                // validator: (UserModel u) =>
+                                // u == null ? "user field is required " : null,
+                                onFind: (String s) =>
+                                    getGoogleSupportedLanguages(),
+                                onChanged: (Language data2) {
+                                  setState(() {
+                                    _selectedCountryToTranslate = data2;
+                                  });
+                                  print(data2);
+                                },
+                                dropdownBuilder: _customDropDownExample,
+                                popupItemBuilder: _customPopupItemBuilderExample,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: ScreenSizeConfig.blockSizeHorizontal * 1,
+                    ),
+                    ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        itemCount: dynamicFlashCards.length,
+                        itemBuilder: (_, index) => dynamicFlashCards[index]),
+                  ],
                 ),
               ),
-            ],
-          ),
-          SizedBox(
-            height: size.height * 0.06,
-          ),
-          //RoundedInputField(),
-          Flexible(
-            child: ListView.builder(
-                itemCount: dynamicFlashCards.length,
-                itemBuilder: (_, index) => dynamicFlashCards[index]),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FloatingActionButton(
-                    child: Icon(Icons.add),
-                    backgroundColor: Colors.green,
-                    onPressed: () {
-                      addDynamic();
-                    },
-                  ),
-                  FloatingActionButton(
-                    child: Icon(CupertinoIcons.envelope),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+            );
+          } else if (snapshot.hasError) {
+            return Icon(Icons.error_outline);
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 
   addDynamic() {
@@ -177,41 +283,92 @@ class _BodyState extends State<Body> {
       dynamicFlashCards = [];
     }
     setState(() {
-      _flashCardIndex +=1;
+      _flashCardIndex += 1;
     });
     if (dynamicFlashCards.length >= 40) {
       return;
     }
-    dynamicFlashCards.add(new DynamicFlashCard(myFocusNode,_flashCardIndex));
+    dynamicFlashCards.add(new DynamicFlashCard(_selectedCountry.languageCode,_selectedCountryToTranslate.languageCode,myFocusNode, _flashCardIndex));
   }
 
-  swapLanguage()
-  {
-    int temporaryCountry;
+  cancelDynamic() {
+    dynamicFlashCards.removeLast();
     setState(() {
+      _flashCardIndex -= 1;
+    });
+  }
+
+  swapLanguage() {
+    Language temporaryCountry;
+    setState(() {
+      print(_selectedCountry);
+      print(_selectedCountryToTranslate);
 
       temporaryCountry = _selectedCountry;
       _selectedCountry = _selectedCountryToTranslate;
       _selectedCountryToTranslate = temporaryCountry;
-
-
     });
   }
+
   submitData() {
     dynamicFlashCards.forEach((widget) => print(widget.word.text));
     dynamicFlashCards.forEach((widget) => print(widget.translated.text));
   }
 
-  List<DropdownMenuItem<String>> buildDropDownMenuItems(List listItems) {
-    List<DropdownMenuItem<String>> items = List();
-    for (String cities in listItems) {
-      items.add(
-        DropdownMenuItem(
-          child: Text(cities),
-          value: cities,
+  Future<List<Language>> getGoogleSupportedLanguages() async {
+    final http.Response response = await http
+        .get('http://10.0.2.2:8080/translation-api/supported-languages');
+
+    final jsonResponse = json.decode(response.body);
+
+    return Language.fromJsonList(jsonResponse);
+  }
+
+  Widget _customDropDownExample(
+      BuildContext context, Language item, String itemDesignation) {
+    return Container(
+
+      child: (item?.language == null)
+          ? ListTile(
+              //contentPadding: EdgeInsets.all(0),
+              //leading: CircleAvatar(),
+              title: Text(""),
+            )
+          : ListTile(
+
+              title: Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: AutoSizeText(item.language,maxLines: 1,
+
+                 ),
+              ),
+
+
+               // softWrap: true,
+              ),
+
+            );
+
+  }
+
+  Widget _customPopupItemBuilderExample(
+      BuildContext context, Language item, bool isSelected) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: !isSelected
+          ? null
+          : BoxDecoration(
+              border: Border.all(color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.white,
+            ),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item.language,maxLines: 1,
+          style: TextStyle(fontSize: 15),
         ),
-      );
-    }
-    return items;
+        // subtitle: Text(item.language.toString()),
+      ),
+    );
   }
 }

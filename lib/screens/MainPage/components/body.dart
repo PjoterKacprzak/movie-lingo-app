@@ -77,6 +77,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       extendBody: true,
       body: NavigationScreen(
         _bottomNavIndex,
@@ -124,7 +125,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             ],
           );
         },
-        backgroundColor: HexColor('#373A36'),
+        backgroundColor:Colors.black,
         activeIndex: _bottomNavIndex,
         splashColor: HexColor('#FFA400'),
         notchAndCornersAnimation: animation,

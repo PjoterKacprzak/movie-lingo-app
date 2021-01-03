@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 
 import 'Screens/Welcome/welcome_screen.dart';
 void main() {
@@ -9,6 +10,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Movie Lingo',
       theme: ThemeData(

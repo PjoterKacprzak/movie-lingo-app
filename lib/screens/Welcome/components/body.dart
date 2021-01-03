@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:movie_lingo_app/components/rounded_button.dart';
 import 'package:movie_lingo_app/constants.dart';
+import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import '../../Login/login_screen.dart';
 import '../../Signup/signup_screen.dart';
 import 'background.dart';
@@ -10,6 +11,7 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    ScreenSizeConfig().init(context);
     // This size provide us total height and width of our screen
     return Background(
       child: SingleChildScrollView(
