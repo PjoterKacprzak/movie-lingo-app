@@ -33,13 +33,14 @@ class RoundedInputField extends StatelessWidget {
         controller:controller,
         onChanged: onChanged,
         style: style,
-        cursorColor: kPrimaryColor,
+        cursorColor: Colors.black,
         decoration: InputDecoration(
-
+            fillColor: beigeColor,
           hintStyle: TextStyle(
             //fontWeight: FontWeight,
               fontStyle: FontStyle.italic,
-                  fontSize: ScreenSizeConfig.blockSizeHorizontal * 4
+              color: Colors.black.withOpacity(0.4),
+              fontSize: ScreenSizeConfig.blockSizeHorizontal * 3
 
           ),
           icon: Icon(

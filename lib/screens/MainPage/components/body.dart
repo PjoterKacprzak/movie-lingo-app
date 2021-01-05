@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:movie_lingo_app/screens/MainPage/main_screen.dart';
-import 'package:movie_lingo_app/screens/NewFlashCard/new_flash_card.dart';
+import 'package:movie_lingo_app/screens/NewFlashCardRemake/NewFlashCardRemake.dart';
 import 'package:movie_lingo_app/screens/ProfilePage/profile_screen.dart';
 
 class Body extends StatefulWidget {
@@ -163,7 +163,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NewFlashCard()));
+                          builder: (context) => NewFlashCardRemake()));
 
                 },
                 child: Text("New flash card"),
@@ -276,7 +276,7 @@ class _NavigationScreenState extends State<NavigationScreen>
         }
       case 4:
         {
-          return NewFlashCard();
+          return NewFlashCardRemake();
         }
       default:
         {
