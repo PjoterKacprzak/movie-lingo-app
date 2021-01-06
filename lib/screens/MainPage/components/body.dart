@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:movie_lingo_app/screens/DisplayCards/display_cards.dart';
 import 'package:movie_lingo_app/screens/MainPage/main_screen.dart';
 import 'package:movie_lingo_app/screens/NewFlashCardRemake/NewFlashCardRemake.dart';
 import 'package:movie_lingo_app/screens/ProfilePage/profile_screen.dart';
@@ -38,7 +39,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   final iconText = <String>[
     "Home",
     "Soon",
-    "Search",
+    "Your Cards",
     "Profile",
   ];
 
@@ -50,7 +51,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       systemNavigationBarIconBrightness: Brightness.light,
     );
     SystemChrome.setSystemUIOverlayStyle(systemTheme);
-
     _animationController = AnimationController(
       duration: Duration(seconds: 1),
       vsync: this,
@@ -268,7 +268,7 @@ class _NavigationScreenState extends State<NavigationScreen>
         }
       case 2:
         {
-          return Container();
+          return DisplayCards();
         }
       case 3:
         {

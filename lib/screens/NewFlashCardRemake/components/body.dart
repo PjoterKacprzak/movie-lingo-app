@@ -238,8 +238,9 @@ class _BodyState extends State<Body> {
   submitData(String flashCardName,String sourceLanguage, String targetLanguage) async{
 
     List<FlashCard> flashcards = List();
-    dynamicFlashCards.forEach((widget) => flashcards.add(FlashCard(widget.word.text,widget.translated.text)));
-    UserFlashCardSheet userFlashCardSheet = new UserFlashCardSheet("test", flashCardName, sourceLanguage, targetLanguage, flashcards);
+    dynamicFlashCards.forEach((widget) => flashcards.add(FlashCard(sourceWord:widget.word.text, translatedWord:widget.translated.text)));
+
+    UserFlashCardSheet userFlashCardSheet = new UserFlashCardSheet(email:"", flashCardName: flashCardName,sourceLanguage: sourceLanguage, targetLanguage: targetLanguage,flashCards: flashcards);
 
     String token = await TokenController().retrieveToken("token");
 
