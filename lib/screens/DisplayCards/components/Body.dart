@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:movie_lingo_app/constants.dart';
 import 'package:movie_lingo_app/controller/TokenController.dart';
 import 'package:http/http.dart' as http;
+import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import 'package:movie_lingo_app/model/UserFlashCardSheet.dart';
 import 'package:movie_lingo_app/screens/EditFlashCard/edit_flash_card.dart';
 
@@ -66,6 +67,8 @@ class _BodyState extends State<Body> {
 
   Widget _buildList(BuildContext context, Axis direction) {
     return ListView.builder(
+      padding: EdgeInsets.only(
+          top: ScreenSizeConfig.blockSizeVertical *8),
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
@@ -299,7 +302,6 @@ class _BodyState extends State<Body> {
     Iterable l = json.decode(response.body);
     List<UserFlashCardSheet> cards = List<UserFlashCardSheet>.from(
         l.map((model) => UserFlashCardSheet.fromJson(model)));
-    print(cards);
     setState(() {
       _items = cards;
     });

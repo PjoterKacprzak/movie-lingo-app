@@ -16,7 +16,7 @@ import '../../../constants.dart';
 
 class DynamicFlashCardRemake extends StatefulWidget {
 
-  // int _flashCardIndex;
+  int _flashCardIndex;
   String _hint;
   String _sourceLanguage;
   String _targetLanguage;
@@ -26,7 +26,7 @@ class DynamicFlashCardRemake extends StatefulWidget {
   Function(int) callbackDeleteFlashCard;
 
 
-  DynamicFlashCardRemake( this._flashCard);
+  DynamicFlashCardRemake( this._flashCard, this._flashCardIndex, this.callbackDeleteFlashCard);
 
 
   @override
@@ -43,22 +43,20 @@ class _DynamicFlashCardRemakeState extends State<DynamicFlashCardRemake> {
   Widget build(BuildContext context) {
     widget.word.text = widget._flashCard.sourceWord;
     widget.translated.text = widget._flashCard.translatedWord;
-    print(widget._flashCard);
-
     return Column(
 
       children: [
         Container(
           // padding: EdgeInsets.all(ScreenSizeConfig.blockSizeVertical * 1),
-          decoration:BoxDecoration(
-            border: new Border.all(
-                color: yellowTheemeColor,
-                width: 1.0,
-                style: BorderStyle.solid
-            ),
-            borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
-
-          ),
+          // decoration:BoxDecoration(
+          //   border: new Border.all(
+          //       color: yellowTheemeColor,
+          //       width: 1.0,
+          //       style: BorderStyle.solid
+          //   ),
+          //   borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
+          //
+          // ),
 //      margin: new EdgeInsets.all(8.0),
           child: ListBody(
             children: <Widget>[
@@ -74,8 +72,7 @@ class _DynamicFlashCardRemakeState extends State<DynamicFlashCardRemake> {
                               child: Align(
                                 alignment: AlignmentDirectional.centerStart,
                                 child: Text(
-                                 // "${widget._flashCardIndex+1}.",
-                                  'test',
+                                  "${widget._flashCardIndex+1}.",
                                   style: TextStyle(fontSize: ScreenSizeConfig.blockSizeVertical * 3, color: Color(0xffFFA400)),
                                 ),
                               ),
@@ -122,7 +119,7 @@ class _DynamicFlashCardRemakeState extends State<DynamicFlashCardRemake> {
                         right: -1,
                         child: GestureDetector(
                           onTap:(){
-                           // deleteFlashCard(widget._flashCardIndex);
+                            deleteFlashCard(widget._flashCardIndex);
                           },
                           child: Icon(Icons.cancel,size: ScreenSizeConfig.blockSizeHorizontal * 6,color: Colors.red,),),
                       )
@@ -144,7 +141,6 @@ class _DynamicFlashCardRemakeState extends State<DynamicFlashCardRemake> {
                       //controller:,
                       icon: Icons.flag,
                       onChanged:(text){
-
                         //widget.translated.text = text;
                       //  print(widget.translated.text);
                       },
