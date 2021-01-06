@@ -19,7 +19,7 @@ class VerticalListItem extends StatelessWidget {
       child: Card(
       color: beigeColor,
             shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.white70, width: 3),
+            side: BorderSide(color: beigeColor, width: 3),
             borderRadius: BorderRadius.circular(33),
     ),
         child: ListTile(

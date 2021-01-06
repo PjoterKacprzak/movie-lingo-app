@@ -6,6 +6,7 @@ import 'package:movie_lingo_app/model/FlashCard.dart';
 
 class UserFlashCardSheet{
 
+    int id;
    String email;
    String flashCardName;
    String sourceLanguage;
@@ -13,7 +14,7 @@ class UserFlashCardSheet{
    List<FlashCard> flashCards;
 
 
-   UserFlashCardSheet({this.email, this.flashCardName, this.sourceLanguage,
+   UserFlashCardSheet({this.id,this.email, this.flashCardName, this.sourceLanguage,
        this.targetLanguage,this.flashCards});
 
 
@@ -23,6 +24,7 @@ class UserFlashCardSheet{
        List<FlashCard> _flashCards = tagObjsJson.map((tagJson) => FlashCard.fromJson(tagJson)).toList();
 
        return UserFlashCardSheet(
+           id:json['id'],
            email:json['email'] as String,
            flashCardName:json['flashCardName'] as String,
            sourceLanguage:json['sourceLanguage'] as String,
@@ -31,7 +33,8 @@ class UserFlashCardSheet{
        );
      } else {
        return UserFlashCardSheet(
-         email: json['email'] as String,
+         id:json['id'],
+         email:json['email'] as String,
          flashCardName:json['flashCardName'] as String,
          sourceLanguage:json['sourceLanguage'] as String,
          targetLanguage:json['targetLanguage'] as String,
@@ -57,8 +60,8 @@ class UserFlashCardSheet{
        flashCards.add(FlashCard(sourceWord:word, translatedWord:translatedWord));
      }
 
-     @override
-     String toString() {
-       return 'UserFlashCardSheet{email: $email, flashCardName: $flashCardName, sourceLanguage: $sourceLanguage, targetLanguage: $targetLanguage, flashCards: $flashCards}';
-     }
-   }
+    @override
+  String toString() {
+    return 'UserFlashCardSheet{id: $id, email: $email, flashCardName: $flashCardName, sourceLanguage: $sourceLanguage, targetLanguage: $targetLanguage, flashCards: $flashCards}';
+  }
+}

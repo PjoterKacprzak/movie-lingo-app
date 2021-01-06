@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:movie_lingo_app/constants.dart';
+import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import 'package:movie_lingo_app/screens/DisplayCards/display_cards.dart';
 import 'package:movie_lingo_app/screens/MainPage/main_screen.dart';
 import 'package:movie_lingo_app/screens/NewFlashCardRemake/NewFlashCardRemake.dart';
@@ -77,7 +79,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+        backgroundColor: darkBlueThemeColor,
       extendBody: true,
       body: NavigationScreen(
         _bottomNavIndex,
@@ -86,7 +88,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         scale: animation,
         child: FloatingActionButton(
           elevation: 8,
-          backgroundColor: HexColor('#FFA400'),
+          backgroundColor: yellowTheemeColor,
           child: Icon(
             Icons.add,
             color: HexColor('#373A36'),
@@ -102,14 +104,14 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       bottomNavigationBar: AnimatedBottomNavigationBar.builder(
         itemCount: iconList.length,
         tabBuilder: (int index, bool isActive) {
-          final color = isActive ? HexColor('#FFA400') : Colors.white;
+          final color = isActive ? HexColor('#FFA400') : beigeColor;
           return Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 iconList[index],
-                size: 20,
+                size: ScreenSizeConfig.blockSizeHorizontal +17,
                 color: color,
               ),
               const SizedBox(height: 4),
@@ -127,7 +129,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         },
         backgroundColor:Colors.black,
         activeIndex: _bottomNavIndex,
-        splashColor: HexColor('#FFA400'),
+        splashColor: beigeColor,
         notchAndCornersAnimation: animation,
         splashSpeedInMilliseconds: 300,
         notchSmoothness: NotchSmoothness.defaultEdge,
@@ -140,7 +142,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget actionSheetMethod(BuildContext context) {
-
     showCupertinoModalPopup(
         context: context,
         builder: (context) {
@@ -168,7 +169,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                 },
                 child: Text("New flash card"),
               ),
-              CupertinoActionSheetAction(
+               CupertinoActionSheetAction(
                 onPressed: () {},
                 child: Text("Option 2"),
               ),
@@ -260,11 +261,15 @@ class _NavigationScreenState extends State<NavigationScreen>
     switch (_bottomNavBar) {
       case 0:
         {
-          return Container();
+          return Container(
+            color: darkBlueThemeColor,
+          );
         }
       case 1:
         {
-          return Container();
+          return Container(
+              color: darkBlueThemeColor
+          );
         }
       case 2:
         {
@@ -297,156 +302,3 @@ class HexColor extends Color {
     return int.parse(hexColor, radix: 16);
   }
 }
-
-//
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-// import 'package:movie_lingo_app/components/cupertino_action_sheet_widget.dart';
-//
-// import 'package:movie_lingo_app/screens/ProfilePage/profile_screen.dart';
-//
-// class Body extends StatefulWidget {
-//
-//
-//   @override
-//   _BodyState createState() => _BodyState();
-//
-// }
-//
-// class _BodyState extends State<Body> {
-//
-//
-//   int _selectedIndex = 0;
-//   static const TextStyle optionStyle =
-//   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-//
-//   static List<Widget> _widgetOptions = <Widget>[
-//     Text(
-//       'Index 0: Home',
-//       style: optionStyle,
-//     ),
-//     Text(
-//       'Index 1: Search',
-//       style: optionStyle,
-//     ),
-//
-//     Text(
-//       'Index 2: add',
-//       style: optionStyle,
-//     ),
-//
-//
-//     ProfilePage(),
-//   ];
-//
-//   void _onItemTapped(int index) {
-//     setState(() {
-//       _selectedIndex = index;
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//
-//       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-//         floatingActionButton: FloatingActionButton(
-//           onPressed: () {
-//             actionSheetMethod(context); },
-//           tooltip: 'Increment',
-//           child: Icon(Icons.add),
-//           elevation: 2.0,
-//         ),
-//         body: Center(
-//           child: _widgetOptions.elementAt(_selectedIndex),
-//         ),
-//         bottomNavigationBar: new Theme(
-//           data: Theme.of(context).copyWith(
-//             // sets the background color of the `BottomNavigationBar`
-//               canvasColor: Color(0xffe3d8),
-//               // sets the active color of the `BottomNavigationBar` if `Brightness` is light
-//               primaryColor: Colors.red,
-//               textTheme: Theme
-//                   .of(context)
-//                   .textTheme
-//                   .copyWith(caption: new TextStyle(color: Color(0x0a043c)))),
-//           // sets the inactive color of the `BottomNavigationBar`
-//           child: BottomNavigationBar(
-//             items: const <BottomNavigationBarItem>[
-//               BottomNavigationBarItem(
-//                 icon: Icon(Icons.home),
-//                 label: 'Home',
-//               ),
-//               BottomNavigationBarItem(
-//                 icon: Icon(Icons.search),
-//                 label: 'Search',
-//               ),
-//               BottomNavigationBarItem(
-//                 icon: Icon(Icons.add),
-//                 label: 'Add',
-//               ),
-//               BottomNavigationBarItem(
-//                 icon: Icon(Icons.account_circle_sharp),
-//                 label: 'Profile',
-//               ),
-//             ],
-//             currentIndex: _selectedIndex,
-//             selectedItemColor: Colors.amber[800],
-//             unselectedItemColor: Colors.black,
-//             onTap: _onItemTapped,
-//           ),
-//         )
-//     );
-//   }
-//
-//
-//   actionSheetMethod(BuildContext context) {
-//     int index = 0;
-//
-//     showCupertinoModalPopup(
-//         context: context,
-//         builder: (context) {
-//           return CupertinoActionSheet(
-//             title: Text("Choose Option"),
-//             cancelButton: CupertinoActionSheetAction(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: Text("Cancel"),
-//             ),
-//             actions: [
-//               CupertinoActionSheetAction(
-//                 onPressed: () {
-//                   setState(() {
-//                     index = 1;
-//                   });
-//                   //return NewFlashCard();
-//                   // Navigator.push(
-//                   //     context,
-//                   //     MaterialPageRoute(
-//                   //         builder: (context) => NewFlashCard()));
-//                   //
-//
-//                 },
-//                 child: Text("Option 1"),
-//               ),
-//               CupertinoActionSheetAction(
-//                 onPressed: () {},
-//                 child: Text("Option 2"),
-//               ),
-//               CupertinoActionSheetAction(
-//                 onPressed: () {},
-//                 child: Text("Option 3"),
-//               ),
-//               CupertinoActionSheetAction(
-//                 onPressed: () {},
-//                 child: Text("Option 4"),
-//               ),
-//             ],
-//           );
-//         }
-//     );
-//   }
-// }
-//
-//

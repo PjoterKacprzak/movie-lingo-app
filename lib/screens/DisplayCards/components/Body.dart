@@ -7,6 +7,7 @@ import 'package:movie_lingo_app/constants.dart';
 import 'package:movie_lingo_app/controller/TokenController.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_lingo_app/model/UserFlashCardSheet.dart';
+import 'package:movie_lingo_app/screens/EditFlashCard/edit_flash_card.dart';
 
 import 'HorizontalListItem.dart';
 import 'VerticalListItem.dart';
@@ -246,8 +247,13 @@ class _BodyState extends State<Body> {
                 color: renderingMode == SlidableRenderingMode.slide
                     ? Colors.indigo.withOpacity(animation.value)
                     : Colors.indigo,
-                icon: Icons.share,
-                onTap: () => _showSnackBar(context, 'Share'),
+                icon: Icons.edit,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditFlashCard(item)));
+                      }
               );
             }
           }),
@@ -280,6 +286,7 @@ class _BodyState extends State<Body> {
 
   void _showSnackBar(BuildContext context, String text) {
     Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
+
   }
 
   Future<void> getCards() async {

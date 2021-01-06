@@ -12,8 +12,10 @@ class RoundedInputField extends StatelessWidget {
   final TextStyle style;
   final FocusNode focusNode;
   final ValueChanged<String> onChanged;
+
  // final TextAlign textAlign;
   const RoundedInputField({
+
     Key key,
     this.style,
     this.hintText,
@@ -27,8 +29,9 @@ class RoundedInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
-      child: TextField(
+      child: TextFormField(
 
+        //initialValue: initialValue1,
        // textAlign: textAlign,
         controller:controller,
         onChanged: onChanged,
