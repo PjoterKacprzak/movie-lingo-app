@@ -1,9 +1,7 @@
 import 'dart:convert';
 
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:movie_lingo_app/components/rounded_input_field.dart';
 import 'package:movie_lingo_app/model/FlashCard.dart';
@@ -11,7 +9,6 @@ import 'package:movie_lingo_app/model/Language.dart';
 import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../constants.dart';
 
 
 class DynamicFlashCardRemake extends StatefulWidget {

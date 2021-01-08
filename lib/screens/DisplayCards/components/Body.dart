@@ -26,7 +26,7 @@ class _BodyState extends State<Body> {
 
   @protected
   void initState() {
-    getData();
+    getData().
     slidableController = SlidableController(
       onSlideAnimationChanged: handleSlideAnimationChanged,
       onSlideIsOpenChanged: handleSlideIsOpenChanged,
