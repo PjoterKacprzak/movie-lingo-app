@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Screens/Welcome/welcome_screen.dart';
+import 'screens/Login/auto_login.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: WelcomeScreen(),
+      home: AutoLogin()
     );
   }
 }

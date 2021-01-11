@@ -82,7 +82,7 @@ class _BodyState extends State<Body> {
                 heroTag: "btn1",
                 child: Icon(CupertinoIcons.envelope),
                 onPressed: () {
-                  getGoogleSupportedLanguages();
+                  //getGoogleSupportedLanguages();
                   submitData(_flashCardNameController.text,_selectedLanguage.languageCode,_selectedLanguageTranslation.languageCode);
                 },
               ),

@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import 'package:movie_lingo_app/model/UserFlashCardSheet.dart';
 import 'package:movie_lingo_app/screens/EditFlashCard/edit_flash_card.dart';
+import 'package:movie_lingo_app/screens/_StudyScreens/SlideStudyScreen/slide_study_screen.dart';
 
 import 'HorizontalListItem.dart';
 import 'VerticalListItem.dart';
@@ -19,6 +20,9 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+
+  Future cards;
+
   List<UserFlashCardSheet> _items;
   SlidableController slidableController;
   Animation<double> _rotationAnimation;
@@ -26,17 +30,19 @@ class _BodyState extends State<Body> {
 
   @protected
   void initState() {
-    getData().
+    fetchData();
     slidableController = SlidableController(
       onSlideAnimationChanged: handleSlideAnimationChanged,
       onSlideIsOpenChanged: handleSlideIsOpenChanged,
     );
     super.initState();
   }
-  getData() async {
-    getCards();
-  }
 
+void fetchData()async{
+    setState(() {
+      cards = getCards();
+    });
+}
   void handleSlideAnimationChanged(Animation<double> slideAnimation) {
     setState(() {
       _rotationAnimation = slideAnimation;
@@ -54,14 +60,23 @@ class _BodyState extends State<Body> {
     return Scaffold(
       backgroundColor: darkBlueThemeColor,
       body: Center(
-        child: OrientationBuilder(
-          builder: (context, orientation) => _buildList(
-              context,
-              orientation == Orientation.portrait
-                  ? Axis.vertical
-                  : Axis.horizontal),
-        ),
-      ),
+        child: FutureBuilder(
+              future: cards,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return OrientationBuilder(
+                    builder: (context, orientation) => _buildList(
+                        context,
+                        orientation == Orientation.portrait
+                            ? Axis.vertical
+                            : Axis.horizontal),
+                  );
+                } else if (snapshot.hasError) {
+                  return Icon(Icons.error_outline);
+                } else {
+                  return CircularProgressIndicator();
+                }
+              })),
     );
   }
 
@@ -210,38 +225,18 @@ class _BodyState extends State<Body> {
           builder: (context, index, animation, renderingMode) {
             if (index == 0) {
               return IconSlideAction(
-                caption: 'Archive',
+                caption: 'Study',
                 color: renderingMode == SlidableRenderingMode.slide
                     ? Colors.blue.withOpacity(animation.value)
                     : (renderingMode == SlidableRenderingMode.dismiss
                         ? Colors.blue
                         : Colors.green),
-                icon: Icons.archive,
-                onTap: () async {
-                  var state = Slidable.of(context);
-                  var dismiss = await showDialog<bool>(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text('Delete'),
-                        content: Text('Item will be deleted'),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text('Cancel'),
-                            onPressed: () => Navigator.of(context).pop(false),
-                          ),
-                          FlatButton(
-                            child: Text('Ok'),
-                            onPressed: () => Navigator.of(context).pop(true),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-
-                  if (dismiss) {
-                    state.dismiss();
-                  }
+                icon: Icons.school,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SlideStudyScreen(item)));
                 },
               );
             } else {
@@ -270,7 +265,13 @@ class _BodyState extends State<Body> {
                     ? Colors.grey.shade200.withOpacity(animation.value)
                     : Colors.grey.shade200,
                 icon: Icons.more_horiz,
-                onTap: () => _showSnackBar(context, 'More'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SlideStudyScreen(item)));
+                    },
+
                 closeOnTap: false,
               );
             } else {

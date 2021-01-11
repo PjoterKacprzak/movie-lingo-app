@@ -12,6 +12,7 @@ import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import 'package:movie_lingo_app/screens/DisplayCards/display_cards.dart';
 import 'package:movie_lingo_app/screens/MainPage/main_screen.dart';
 import 'package:movie_lingo_app/screens/NewFlashCardRemake/NewFlashCardRemake.dart';
+import 'package:movie_lingo_app/screens/NewMovieFlashCard/new_movie_flash_card.dart';
 import 'package:movie_lingo_app/screens/ProfilePage/profile_screen.dart';
 
 class Body extends StatefulWidget {
@@ -111,7 +112,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             children: [
               Icon(
                 iconList[index],
-                size: ScreenSizeConfig.blockSizeHorizontal +17,
+                size: ScreenSizeConfig.blockSizeHorizontal + 17,
                 color: color,
               ),
               const SizedBox(height: 4),
@@ -170,8 +171,13 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                 child: Text("New flash card"),
               ),
                CupertinoActionSheetAction(
-                onPressed: () {},
-                child: Text("Option 2"),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewMovieFlashCard()));
+                },
+                child: Text("New movie flash card"),
               ),
               CupertinoActionSheetAction(
                 onPressed: () {},

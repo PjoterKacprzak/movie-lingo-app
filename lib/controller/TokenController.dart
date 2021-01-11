@@ -7,9 +7,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
    void  saveToken(String token)async{
      storage.write(key: "token", value: token);
      storage.write(key: "isLoggedIn",value: "Yes");
-     Map<String, String> allValues = await storage.readAll();
+     //Map<String, String> allValues = await storage.readAll();
 
-     print(allValues);
+     //print(allValues);
   }
 
   void deleteToken(String token)async
@@ -19,12 +19,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
    print("all values from storage will be deleted");
    Map<String, String> allValues = await storage.readAll();
-   print(allValues);
+ //  print(allValues);
   }
 
   Future<String>  retrieveToken(String value)async{
-    Map<String, String> allValues = await storage.readAll();
-    print(allValues);
+    //Map<String, String> allValues = await storage.readAll();
+    //print(allValues);
      return storage.read(key: value);
   }
 
