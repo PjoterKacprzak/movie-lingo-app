@@ -28,7 +28,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   TCardController _controller = TCardController();
-  int _index=0;
+  int _index= 0;
   List<DisplaySlidableFlashCard> _listOfSlidableFlashCards;
 
   @override
@@ -49,8 +49,8 @@ class _BodyState extends State<Body> {
           children: <Widget>[
            IntervalProgressBar(
           direction: IntervalProgressDirection.horizontal,
-          max: _listOfSlidableFlashCards.length,
-          progress: _index,
+          max: _listOfSlidableFlashCards.length+1,
+          progress: _index+1,
           intervalSize: 1,
           size: Size(
             ScreenSizeConfig.blockSizeVertical * 30,
@@ -64,28 +64,29 @@ class _BodyState extends State<Body> {
           radius: 3,
              intervalDegrees:  300.0,
            ),
-            SizedBox(height: ScreenSizeConfig.blockSizeVertical * 5,),
+            SizedBox(height: ScreenSizeConfig.blockSizeVertical * 9),
             //SizedBox(height: ScreenSizeConfig.blockSizeVertical * 5),
             TCard(
-
+                size: Size( ScreenSizeConfig.blockSizeHorizontal * 80,
+                    ScreenSizeConfig.blockSizeVertical *40),
               cards: _listOfSlidableFlashCards,
               controller: _controller,
               onForward: (index, info) {
                 print(_index);
-               // _index = index;
+                _index = index;
                 print(info.direction);
                 setState(() {});
               },
               onBack: (index) {
                 print(_index);
-               // _index = index;
+               _index = index;
                 setState(() {});
               },
               onEnd: () {
                 print('end');
               },
             ),
-           // SizedBox(height: ScreenSizeConfig.blockSizeVertical * 30),
+           SizedBox(height: ScreenSizeConfig.blockSizeVertical * 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -122,7 +123,7 @@ class _BodyState extends State<Body> {
                       borderRadius: BorderRadius.circular(18.0),
                       side: BorderSide(color: Colors.black),
                     ),
-                    color: yellowTheemeColor,
+                    color: Colors.red,
                     onPressed: () {_controller.reset();
                     setState(() {
                       _index = 0;
