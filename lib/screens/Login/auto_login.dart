@@ -40,7 +40,6 @@ class _AutoLoginState extends State<AutoLogin> {
             if (snapshot.hasData) {
               if (snapshot.data == 200) {
                 return MainScreen();
-
               } else {
                 TokenController().deleteToken("token");
                 return LoginScreen();
@@ -54,7 +53,12 @@ class _AutoLoginState extends State<AutoLogin> {
               //     child: Center(
               //       child: CircularProgressIndicator(),
               //     ));
-              return LoginScreen();
+              return Container(
+                      height:30,
+                      width:30,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ));
             }
           }),
     );
