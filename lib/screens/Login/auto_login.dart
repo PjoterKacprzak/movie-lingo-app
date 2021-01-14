@@ -41,24 +41,19 @@ class _AutoLoginState extends State<AutoLogin> {
               if (snapshot.data == 200) {
                 return MainScreen();
               } else {
-                TokenController().deleteToken("token");
+                //TokenController().deleteToken("token");
                 return LoginScreen();
               }
             } else if (snapshot.hasError) {
               return LoginScreen();
             } else {
-              // return Container(
-              //     height:30,
-              //     width:30,
-              //     child: Center(
-              //       child: CircularProgressIndicator(),
-              //     ));
               return Container(
-                      height:30,
-                      width:30,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ));
+                  height:30,
+                  width:30,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ));
+              return LoginScreen();
             }
           }),
     );
@@ -68,8 +63,8 @@ class _AutoLoginState extends State<AutoLogin> {
     print("Auto-Login...");
     var userToken = await TokenController().retrieveToken("token");
     var isLoggedIn = await TokenController().retrieveToken("isLoggedIn");
-    // print(userToken);
-    // print(isLoggedIn);
+    print(userToken);
+    print(isLoggedIn);
 
     if (isLoggedIn == "Yes") {
       var prepareTokenJson = {};
@@ -83,22 +78,9 @@ class _AutoLoginState extends State<AutoLogin> {
         'authorization': userToken
       });
           return response.statusCode;
-      if (response.statusCode == 400) {
-        TokenController().deleteToken("token");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
-      }
-      else if (response.statusCode == 200) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MainScreen()));
-      }
-      else {
-        print("Failed to AutoLogin");
-        TokenController().deleteToken("token");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
-      }
+
     }
+    return 0;
   }
 
 }

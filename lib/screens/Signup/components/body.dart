@@ -9,6 +9,7 @@ import 'package:movie_lingo_app/components/rounded_button.dart';
 import 'package:movie_lingo_app/components/rounded_input_field.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_lingo_app/components/rounded_password_field.dart';
+import 'package:movie_lingo_app/constants.dart';
 import '../../Login/login_screen.dart';
 import 'background.dart';
 import 'or_divider.dart';
@@ -22,6 +23,8 @@ class Body extends StatelessWidget {
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController confirmPasswordController = new TextEditingController();
   final TextEditingController loginNameController = new TextEditingController();
+
+  int signInResponse;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -57,27 +60,22 @@ class Body extends StatelessWidget {
               onChanged: (value) {},
             ),
             RoundedButton(
+              color: yellowTheemeColor,
               text: "SIGNUP",
               press: () async{
 
                 if(passwordController.text==confirmPasswordController.text) {
                   {
-                    var result = await signUp(emailController.text, passwordController.text,loginNameController.text);
-                    print(result);
-                    if (result == "User saved")
+                    signInResponse = await signUp(emailController.text, passwordController.text,loginNameController.text);
+                    print(signInResponse);
+                    if (signInResponse == 200)
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => LoginScreen()));
-                    else{
 
-                    }
                   }
                 }
-                else
-                  {
-                    Text("Wrong Password");
-                  }
                 },
             ),
             SizedBox(height: size.height * 0.03),
@@ -94,24 +92,24 @@ class Body extends StatelessWidget {
                 );
               },
             ),
-            OrDivider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SocialIcon(
-                  iconSrc: "assets/icons/facebook.svg",
-                  press: () {},
-                ),
-                SocialIcon(
-                  iconSrc: "assets/icons/twitter.svg",
-                  press: () {},
-                ),
-                SocialIcon(
-                  iconSrc: "assets/icons/google-plus.svg",
-                  press: () {},
-                ),
-              ],
-            )
+           // OrDivider(),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[
+            //     SocialIcon(
+            //       iconSrc: "assets/icons/facebook.svg",
+            //       press: () {},
+            //     ),
+            //     SocialIcon(
+            //       iconSrc: "assets/icons/twitter.svg",
+            //       press: () {},
+            //     ),
+            //     SocialIcon(
+            //       iconSrc: "assets/icons/google-plus.svg",
+            //       press: () {},
+            //     ),
+            //   ],
+            // )
           ],
         ),
       ),
@@ -119,16 +117,14 @@ class Body extends StatelessWidget {
   }
 }
 
-Future<String>signUp(String email,String password,String loginName) async
+Future<int>signUp(String email,String password,String loginName) async
 {
   var actualDate = new DateTime.now();
   var dateFormatter = new DateFormat.yMd().add_jm();
   String formattedDate = dateFormatter.format(actualDate);
 
-  //TODO: that can be a method
   var userJson = {};
-  userJson["name"] = '';
-  userJson["lastName"] = '';
+
   userJson["password"] = password;
   userJson["telephoneNumber"] = '';
   userJson["email"] = email;
@@ -141,9 +137,9 @@ Future<String>signUp(String email,String password,String loginName) async
   print(str);
 
   final http.Response response = await http.post(
-      'http://10.0.2.2:8080/addUser',
+      'http://10.0.2.2:8080/new-user',
       headers:{'Content-Type': 'application/json'},
       body: str
   );
-return response.body;
+return response.statusCode;
 }

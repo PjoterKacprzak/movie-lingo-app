@@ -8,6 +8,7 @@ import 'package:movie_lingo_app/components/already_have_an_account_acheck.dart';
 import 'package:movie_lingo_app/components/rounded_button.dart';
 import 'package:movie_lingo_app/components/rounded_input_field.dart';
 import 'package:movie_lingo_app/components/rounded_password_field.dart';
+import 'package:movie_lingo_app/constants.dart';
 import 'package:movie_lingo_app/controller/TokenController.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:movie_lingo_app/screens/Login/login_screen.dart';
@@ -43,7 +44,7 @@ class _BodyState extends State<Body> {
   // }
   @override
   Widget build(BuildContext context) {
-    var storage = FlutterSecureStorage();
+   // var storage = FlutterSecureStorage();
     Size size = MediaQuery
         .of(context)
         .size;
@@ -62,6 +63,7 @@ class _BodyState extends State<Body> {
             ),
             SizedBox(height: size.height * 0.03),
             RoundedInputField(
+
               controller: emailController,
               hintText: "Your Email",
               onChanged: (value) {},
@@ -71,6 +73,7 @@ class _BodyState extends State<Body> {
               onChanged: (value) {},
             ),
             RoundedButton(
+              color: yellowTheemeColor,
               text: "LOGIN",
               press: () async {
                int response =

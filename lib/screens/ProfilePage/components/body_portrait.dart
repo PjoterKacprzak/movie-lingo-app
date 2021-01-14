@@ -8,14 +8,15 @@ import 'package:movie_lingo_app/screens/AboutApp/about_app_screen.dart';
 import 'package:movie_lingo_app/screens/Login/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_lingo_app/screens/PasswordChange/password_change_screen.dart';
+import 'package:movie_lingo_app/screens/ProfilePage/components/background.dart';
 
-class Body extends StatefulWidget {
+class BodyPortrait extends StatefulWidget {
 
   @override
-  _BodyState createState() => _BodyState();
+  _BodyPortraitState createState() => _BodyPortraitState();
 }
 
-class _BodyState extends State<Body> {
+class _BodyPortraitState extends State<BodyPortrait> {
 
 
   User _loggedUser;
@@ -28,8 +29,7 @@ class _BodyState extends State<Body> {
         future : getUserInformation(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return  Container(
-                color: Color(0xff0a043c),
+            return  Background(
                 child: Center(
                   child: Column(
                     children: [
@@ -46,7 +46,7 @@ class _BodyState extends State<Body> {
                             fit: BoxFit.cover,
                           )),
                       SizedBox(height: size.height * 0.01),
-                      Text(snapshot.data.userName+' '+ snapshot.data.userLastName,
+                      Text(snapshot.data.userLoginName,
                           style: TextStyle(
                               fontSize: size.height * 0.03,
                               fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class _BodyState extends State<Body> {
                               child: Stack(alignment: Alignment.centerLeft, children: [
                                 Text("Nickname"),
                                 Center(
-                                  child: Text(snapshot.data.userName+' '+ snapshot.data.userLastName),
+                                  child: Text(snapshot.data.userLoginName),
                                 ),
                                 Positioned(
                                   right: 6,
@@ -140,10 +140,7 @@ class _BodyState extends State<Body> {
                           ),
                         ),
                       ),
-
-
                       SizedBox(height: size.height * 0.03),
-
                       GestureDetector(
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
@@ -152,30 +149,29 @@ class _BodyState extends State<Body> {
                               context, MaterialPageRoute(builder: (context) => AboutApp()));
                         },
                         child: Container(
-                        width: double.infinity,
-                        height: size.height * 0.06,
-                        color: Color(0xffffe3d8),
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Stack(alignment: Alignment.centerLeft, children: [
-                                Text("About MovieLingo"),
-                                Positioned(
-                                  right: 6,
-                                  child: Icon(
-                                    Icons.arrow_forward_ios_outlined,
-                                    size: size.height * 0.02,
+                          width: double.infinity,
+                          height: size.height * 0.06,
+                          color: Color(0xffffe3d8),
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Stack(alignment: Alignment.centerLeft, children: [
+                                  Text("About MovieLingo"),
+                                  Positioned(
+                                    right: 6,
+                                    child: Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                      size: size.height * 0.02,
+                                    ),
                                   ),
-                                ),
-                              ]),
-                            )
-                          ],
+                                ]),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                      ),
-
                       SizedBox(height: size.height * 0.03),
                       GestureDetector(
                         behavior: HitTestBehavior.translucent,
@@ -215,7 +211,8 @@ class _BodyState extends State<Body> {
                       )
                     ],
                   ),
-                ));;
+                )
+            );
           } else if (snapshot.hasError) {
             return Icon(Icons.error_outline);
           } else {
@@ -229,31 +226,33 @@ class _BodyState extends State<Body> {
     showDialog(
         context: context,
         builder: (_) => new CupertinoAlertDialog(
-              title: new Text("Log Out"),
-              content: new Text("Do you accept ?"),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Yes'),
-                  onPressed: () {
-                    TokenController().deleteToken("token");
-
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-                  },
+          title: new Text("Log Out"),
+          content: new Text("Do you accept ?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                TokenController().deleteToken("token");
+                Navigator.pushAndRemoveUntil(
+                    context, MaterialPageRoute(builder: (context) => LoginScreen(),
                 ),
-                FlatButton(
-                  child: Text('No'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            ));
+                        (route) => false
+                );
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ));
   }
 
 
   void getUser()async{
-   // _loggedUser = await getUserInformation(await TokenController().retrieveToken("token"));
+    // _loggedUser = await getUserInformation(await TokenController().retrieveToken("token"));
     print( "Logged  $_loggedUser");
     print(_loggedUser.userEmail);
 

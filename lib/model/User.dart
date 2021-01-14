@@ -3,8 +3,6 @@
 class User{
 
   final int userId;
-  final String userName;
-  final String userLastName;
   final String userEmail;
   final String userPassword;
   final String userProfilePhoto;
@@ -16,10 +14,7 @@ class User{
 
   User(
   {   this.userId,
-      this.userName,
-      this.userLastName,
       this.userEmail,
-
       this.userPassword,
       this.userProfilePhoto,
       this.userCreatedAt,
@@ -31,8 +26,6 @@ class User{
   factory User.fromJson(Map<String,dynamic>json){
     return User(
         userId: json['id'],
-        userName:json['name'],
-        userLastName:json['lastName'],
         userProfilePhoto:json['profilePhoto'],
         userPassword:json['password'],
         userTelephoneNumber:json['telephoneNumber'],
