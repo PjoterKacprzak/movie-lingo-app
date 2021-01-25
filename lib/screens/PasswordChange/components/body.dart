@@ -72,12 +72,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
 
-    ButtonState stateOnlyText = ButtonState.idle;
-    ButtonState stateTextWithIcon = ButtonState.idle;
     return Scaffold(
         body: Background(
             child: SingleChildScrollView(
