@@ -43,6 +43,7 @@ dependencies:
   intervalprogressbar: ^2.0.1
   flutter_alert: ^0.4.0
   flip_card: ^0.4.4
+  toast: ^0.1.5
   flutter:
     sdk: flutter
 

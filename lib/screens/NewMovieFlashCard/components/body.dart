@@ -7,10 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:movie_lingo_app/constants.dart';
 import 'package:movie_lingo_app/model/FlashCard.dart';
+import 'package:movie_lingo_app/model/Language.dart';
 import 'package:movie_lingo_app/model/ScreenSizeConfig.dart';
 import 'package:progress_state_button/iconed_button.dart';
 import 'package:progress_state_button/progress_button.dart';
 import 'package:http/http.dart' as http;
+
+import 'DropDownSearchWidget.dart';
 class Body extends StatefulWidget {
   @override
   _BodyState createState() => _BodyState();
@@ -24,6 +27,9 @@ class _BodyState extends State<Body> {
   String _selectedEpisode;
   String _selectedDifficulty;
 
+  Language _selectedLanguage = Language(language: 'Polish',languageCode: 'pl');
+  Language _selectedLanguageTranslation = Language(language: 'English',languageCode: 'en');
+
   bool movieCheckBox = true;
   bool seriesCheckBox = false;
   double movieCheckBoxOpacity = 1.0;
@@ -31,9 +37,35 @@ class _BodyState extends State<Body> {
   final List<String> data = new List<String>.generate(
       40, (index) => (index + 1).toString());
   final List<String> _difficulty = ["easy", "medium", "hard"];
+  List<Language> _supportedLanguage;
   final TextEditingController movieNameController = new TextEditingController();
 
+  List<FlashCard> listOfMovieFlashCards;
 
+
+
+  callbackLanguage(language)
+  {
+    setState(() {
+      _selectedLanguage = language;
+    });
+  }
+  callbackLanguageToTranslate(language)
+  {
+    setState(() {
+      _selectedLanguageTranslation = language;
+    });
+  }
+
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  fetchData()async{
+    getGoogleSupportedLanguages();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +118,87 @@ class _BodyState extends State<Body> {
 
                     ),
                   ),
+                  // Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       Container(
+                  //         width: ScreenSizeConfig.blockSizeHorizontal * 40,
+                  //         child: DropdownButton(
+                  //           dropdownColor: darkBlueThemeColor,
+                  //           isExpanded: true,
+                  //           hint: Text(
+                  //             'Select language', style: TextStyle(color: beigeColor),),
+                  //           // Not necessary for Option 1
+                  //           value: _selectedSourceLanguage,
+                  //           onChanged: (newValue) {
+                  //             setState(() {
+                  //               _selectedSourceLanguage = newValue;
+                  //             });
+                  //           },
+                  //           items: _supportedLanguage.map((location) {
+                  //             return DropdownMenuItem(
+                  //               child: Center(
+                  //                   child: Text(
+                  //                     location, textAlign: TextAlign.center,
+                  //                     style: TextStyle(color: beigeColor,),)),
+                  //               value: location,
+                  //             );
+                  //           }).toList(),
+                  //         ),
+                  //       ),
+                  //       SizedBox(
+                  //         width: ScreenSizeConfig.blockSizeHorizontal * 5,),
+                  //       Container(
+                  //         width: ScreenSizeConfig.blockSizeHorizontal * 40,
+                  //         child: DropdownButton(
+                  //           dropdownColor: darkBlueThemeColor,
+                  //           isExpanded: true,
+                  //           hint: Text(' Select language',
+                  //             style: TextStyle(color: beigeColor),),
+                  //           // Not necessary for Option 1
+                  //           value: _selectedTargetLanguage,
+                  //           onChanged: (newValue) {
+                  //             setState(() {
+                  //               _selectedTargetLanguage = newValue;
+                  //             });
+                  //           },
+                  //           items: _supportedLanguage.map((location) {
+                  //             return DropdownMenuItem(
+                  //
+                  //               child: Center(
+                  //                   child: Text(
+                  //                     location, textAlign: TextAlign.center,
+                  //                     style: TextStyle(color: beigeColor,),)),
+                  //               value: location,
+                  //             );
+                  //           }).toList(),
+                  //         ),
+                  //       ),
+                  //     ]
+                  // ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: Container(
+                             height: ScreenSizeConfig.blockSizeVertical * 8,
+                            // width: ScreenSizeConfig.safeBlockHorizontal * 2,
+                            child: DropDownSearchWidget(_supportedLanguage,callbackLanguage,_selectedLanguage)),
+                      ),
+
+                      Expanded(
+
+                        child: Container(
+                            // height: ScreenSizeConfig.blockSizeVertical * 8,
+                            // width: ScreenSizeConfig.safeBlockHorizontal * 2,
+                            child: DropDownSearchWidget(_supportedLanguage,callbackLanguageToTranslate,_selectedLanguageTranslation)),
+                      ),
+
+                    ],
+                  ),
+
+
                   Padding(
                     padding: EdgeInsets.symmetric(
                         vertical: 0,
@@ -283,13 +396,14 @@ class _BodyState extends State<Body> {
 
 
   Future<http.Response> getFlashCardsFromOpenSubtitle(String movieOrSeriesName,bool isMovie,int selectedSeason,
-      int selectedEpisode, String selectedDifficulty)async {
-
+      int selectedEpisode, String selectedDifficulty,String sourceLanguage, String targetLanguage)async {
 
     var prepareJson={};
-    prepareJson["movieName"]=movieOrSeriesName;
+    prepareJson["movieName"]="0112573";
     prepareJson["isMovie"]=isMovie;
     prepareJson["difficulty"]=selectedDifficulty;
+    prepareJson["sourceLanguage"]=sourceLanguage;
+    prepareJson["targetLanguage"]=targetLanguage;
     if(!isMovie)
     {
       prepareJson["season"]=selectedSeason;
@@ -303,7 +417,18 @@ class _BodyState extends State<Body> {
         headers: {'Content-Type': 'application/json'},
         body: preparedJson);
 
-    print(response.body);
+
+    if(response.statusCode!=200)
+      {
+        return response;
+      }
+    else
+   // listOfFMovieFlashCards = (json.decode(response.body) as List ).map((e) => FlashCard.fromJson(e)).toList();
+    setState(() {
+      listOfMovieFlashCards = (json.decode(response.body) as List ).map((e) => FlashCard.fromJson(e)).toList();
+      print(listOfMovieFlashCards);
+    });
+
 
     return response;
   }
@@ -319,7 +444,7 @@ class _BodyState extends State<Body> {
           ButtonState.loading:
           IconedButton(text: "Loading", color: Colors.deepPurple.shade700),
           ButtonState.fail: IconedButton(
-              text: "Failed",
+              text: "No subtitles found",
               icon: Icon(Icons.cancel, color: Colors.white),
               color: Colors.red.shade300),
           ButtonState.success: IconedButton(
@@ -350,23 +475,24 @@ class _BodyState extends State<Body> {
         setState(() {
           stateTextWithIcon = ButtonState.loading;
         });
-        //
           if(!movieCheckBox)
-         response = await getFlashCardsFromOpenSubtitle(movieNameController.text,movieCheckBox,
-             int.parse(_selectedSeason),int.parse(_selectedEpisode),_selectedDifficulty);
+            response =  await getFlashCardsFromOpenSubtitle(movieNameController.text,movieCheckBox,
+             int.parse(_selectedSeason),int.parse(_selectedEpisode),_selectedDifficulty,_selectedLanguage.languageCode,_selectedLanguageTranslation.languageCode);
           else
             response = await getFlashCardsFromOpenSubtitle(movieNameController.text,movieCheckBox,
-              0,0,_selectedDifficulty);
-        //     _currentPasswordController.text, _newPasswordController.text);
-        print(response.statusCode);
-        print(response.body);
+              0,0,_selectedDifficulty,_selectedLanguage.languageCode,_selectedLanguageTranslation.languageCode);
+
         if (response.statusCode == 200) {
           setState(() {
             stateTextWithIcon = ButtonState.success;
           });
           break;
         } else {
-          stateTextWithIcon = ButtonState.fail;
+         // Toast.show("No subtitles found", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+          setState(() {
+            stateTextWithIcon = ButtonState.fail;
+          });
+
           break;
         }
 
@@ -383,6 +509,24 @@ class _BodyState extends State<Body> {
     setState(() {
       stateTextWithIcon = stateTextWithIcon;
     });
+  }
+
+
+  Future<void> getGoogleSupportedLanguages() async {
+    final http.Response response = await http
+        .get('http://10.0.2.2:8080/translation-api/supported-languages');
+
+    final jsonResponse = json.decode(response.body);
+
+    if(response.statusCode==200)
+    {
+      setState(() {
+        _supportedLanguage = Language.fromJsonList(jsonResponse);
+      });
+      return Language.fromJsonList(jsonResponse);
+    }
+
+
   }
 
 }
